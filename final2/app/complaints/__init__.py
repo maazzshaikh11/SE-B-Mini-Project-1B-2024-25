@@ -1,1 +1,0 @@
-# Complaints blueprint initialization

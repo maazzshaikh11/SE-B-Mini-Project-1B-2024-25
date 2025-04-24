@@ -1,1 +1,0 @@
-# Notices blueprint initialization
