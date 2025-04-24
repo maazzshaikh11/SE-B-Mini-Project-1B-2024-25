@@ -1,0 +1,14 @@
+Flask
+Flask-Login
+Flask-WTF
+Flask-Mail
+Flask-Cors
+Flask-Session
+mysql-connector-python
+pymysql
+Werkzeug
+Jinja2
+WTForms
+requests
+gunicorn
+python-dotenv

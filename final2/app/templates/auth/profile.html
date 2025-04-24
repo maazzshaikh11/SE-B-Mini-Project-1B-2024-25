@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Commune{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Your Profile</h1>
+    <a href="{{ url_for('auth.change_password') }}" class="btn btn-secondary">
+        <i class="fas fa-key me-1"></i> Change Password
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Personal Information</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('auth.profile') }}">
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ current_user.first_name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="last_name" name="last_name" value="{{ current_user.last_name }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="email" value="{{ current_user.email }}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone Number</label>
+                        <input type="tel" class="form-control" id="phone" name="phone" value="{{ current_user.phone }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="referral_code" class="form-label">Your Referral Code</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="referral_code" value="{{ current_user.referral_code }}" readonly>
+                            <button class="btn btn-outline-secondary" type="button" onclick="copyReferralCode()">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <small class="text-muted">Share this code with others to invite them to your community</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Your Communities</h5>
+            </div>
+            <div class="card-body">
+                {% if communities %}
+                    <div class="list-group">
+                        {% for community in communities %}
+                            <a href="{{ url_for('community.dashboard', community_id=community.id) }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ community.name }}</h5>
+                                </div>
+                                <p class="mb-1">Flat: {{ community.flat_no }}, Floor: {{ community.floor_no }}</p>
+                                <small class="text-muted">
+                                    {% if community.is_rented %}
+                                        <span class="badge bg-info">Rented</span>
+                                    {% else %}
+                                        <span class="badge bg-success">Owner</span>
+                                    {% endif %}
+                                </small>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mb-0">
+                        <p class="mb-0">You are not a member of any community yet.</p>
+                        <a href="{{ url_for('community.join_or_create') }}" class="btn btn-primary mt-2">Join or Create Community</a>
+                    </div>
+                {% endif %}
+            </div>
+            {% if communities %}
+                <div class="card-footer">
+                    <a href="{{ url_for('community.join_or_create') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-plus me-1"></i> Join Another Community
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function copyReferralCode() {
+        const referralCodeInput = document.getElementById('referral_code');
+        referralCodeInput.select();
+        document.execCommand('copy');
+        
+        // Show a temporary tooltip
+        const button = referralCodeInput.nextElementSibling;
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        
+        setTimeout(() => {
+            button.innerHTML = originalHTML;
+        }, 2000);
+    }
+</script>
+{% endblock %}

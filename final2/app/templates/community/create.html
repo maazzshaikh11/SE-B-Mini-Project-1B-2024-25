@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Create Community - Commune{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Create a New Community</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('community.create_community') }}">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Community Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Community Address</label>
+                        <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="flat_no" class="form-label">Your Flat/Apartment Number</label>
+                            <input type="text" class="form-control" id="flat_no" name="flat_no" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="floor_no" class="form-label">Your Floor Number</label>
+                            <input type="number" class="form-control" id="floor_no" name="floor_no" required>
+                        </div>
+                    </div>
+                    <div class="alert alert-info">
+                        <p class="mb-0">
+                            <i class="fas fa-info-circle me-1"></i> By creating a community, you will automatically become its administrator.
+                        </p>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Create Community</button>
+                        <a href="{{ url_for('community.join_or_create') }}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
