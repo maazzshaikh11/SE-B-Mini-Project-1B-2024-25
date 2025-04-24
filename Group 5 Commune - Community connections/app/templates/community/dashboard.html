@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Commune{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Dashboard</h1>
+    
+    {% if communities|length > 1 %}
+    <div class="community-selector">
+        <form action="{{ url_for('community.dashboard') }}" method="GET">
+            <div class="input-group">
+                <label class="input-group-text" for="community_id">Community:</label>
+                <select class="form-select" id="community_id" name="community_id" onchange="this.form.submit()">
+                    {% for comm in communities %}
+                        <option value="{{ comm.id }}" {% if comm.id == active_community.id %}selected{% endif %}>
+                            {{ comm.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Welcome to {{ active_community.name }}</h5>
+                <p class="card-text">
+                    <strong>Address:</strong> {{ active_community.address }}<br>
+                    <strong>Created by:</strong> {{ active_community.first_name }} {{ active_community.last_name }}<br>
+                    <strong>Created on:</strong> {{ active_community.created_at.strftime('%B %d, %Y') }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Notices -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Notices</h5>
+                <a href="{{ url_for('notices.view_notices', community_id=active_community.id) }}" class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                {% if notices %}
+                    <div class="list-group list-group-flush">
+                        {% for notice in notices %}
+                            <div class="list-group-item px-0">
+                                <h6 class="mb-1">{{ notice.title }}</h6>
+                                <p class="mb-1 text-truncate">{{ notice.content }}</p>
+                                <small class="text-muted">
+                                    {{ notice.created_at.strftime('%b %d, %Y') }} by {{ notice.first_name }} {{ notice.last_name }}
+                                </small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">No notices yet.</p>
+                {% endif %}
+            </div>
+            {% if is_admin %}
+                <div class="card-footer">
+                    <a href="{{ url_for('notices.create_notice', community_id=active_community.id) }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus me-1"></i> Post Notice
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Complaints -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Recent Complaints</h5>
+                <a href="{{ url_for('complaints.view_complaints', community_id=active_community.id) }}" class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                {% if complaints %}
+                    <div class="list-group list-group-flush">
+                        {% for complaint in complaints %}
+                            <div class="list-group-item px-0">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-1">{{ complaint.title }}</h6>
+                                    <span class="badge {% if complaint.status == 'pending' %}bg-warning{% elif complaint.status == 'in_progress' %}bg-info{% else %}bg-success{% endif %}">
+                                        {{ complaint.status|replace('_', ' ')|title }}
+                                    </span>
+                                </div>
+                                <p class="mb-1 text-truncate">{{ complaint.description }}</p>
+                                <small class="text-muted">
+                                    <i class="fas fa-thumbs-up me-1"></i> {{ complaint.upvotes }} upvotes
+                                </small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">No complaints yet.</p>
+                {% endif %}
+            </div>
+            <div class="card-footer">
+                <a href="{{ url_for('complaints.create_complaint', community_id=active_community.id) }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus me-1"></i> File Complaint
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Events -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Upcoming Events</h5>
+                <a href="{{ url_for('events.view_events', community_id=active_community.id) }}" class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                {% if events %}
+                    <div class="list-group list-group-flush">
+                        {% for event in events %}
+                            <div class="list-group-item px-0">
+                                <h6 class="mb-1">{{ event.title }}</h6>
+                                <p class="mb-1">
+                                    <i class="fas fa-map-marker-alt me-1"></i> {{ event.location }}<br>
+                                    <i class="fas fa-calendar-alt me-1"></i> {{ event.start_time.strftime('%b %d, %Y') }}<br>
+                                    <i class="fas fa-clock me-1"></i> {{ event.start_time.strftime('%I:%M %p') }} - {{ event.end_time.strftime('%I:%M %p') }}
+                                </p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">No upcoming events.</p>
+                {% endif %}
+            </div>
+            {% if is_admin %}
+                <div class="card-footer">
+                    <a href="{{ url_for('events.create_event', community_id=active_community.id) }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus me-1"></i> Create Event
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Payments -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Pending Payments</h5>
+                <a href="{{ url_for('payments.view_payments', community_id=active_community.id) }}" class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                {% if payments %}
+                    <div class="list-group list-group-flush">
+                        {% for payment in payments %}
+                            <div class="list-group-item px-0">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-1">Maintenance for {{ payment.month }}</h6>
+                                    <span class="badge bg-warning">Pending</span>
+                                </div>
+                                <p class="mb-1">Amount: ${{ payment.amount }}</p>
+                                <a href="{{ url_for('payments.pay_maintenance', payment_id=payment.id, community_id=active_community.id) }}" class="btn btn-sm btn-primary mt-1">
+                                    Pay Now
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">No pending payments.</p>
+                {% endif %}
+            </div>
+            {% if is_admin %}
+                <div class="card-footer">
+                    <a href="{{ url_for('payments.create_payment', community_id=active_community.id) }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus me-1"></i> Create Payment Request
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Notifications -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Notifications</h5>
+            </div>
+            <div class="card-body">
+                {% if notifications %}
+                    <div class="list-group list-group-flush">
+                        {% for notification in notifications %}
+                            <div class="list-group-item px-0">
+                                <h6 class="mb-1">{{ notification.title }}</h6>
+                                <p class="mb-1">{{ notification.content }}</p>
+                                <small class="text-muted">
+                                    {{ notification.created_at.strftime('%b %d, %Y %I:%M %p') }}
+                                </small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted mb-0">No notifications.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Community Members -->
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Community Members</h5>
+                <a href="{{ url_for('community.members', community_id=active_community.id) }}" class="btn btn-sm btn-outline-light">
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="card-body">
+                <p class="text-center">
+                    <a href="{{ url_for('community.members', community_id=active_community.id) }}" class="btn btn-primary">
+                        <i class="fas fa-users me-1"></i> View All Members
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
