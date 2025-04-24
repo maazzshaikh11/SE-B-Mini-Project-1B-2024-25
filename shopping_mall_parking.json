@@ -1,0 +1,28 @@
+{
+  "P1": "available",
+  "P2": "available",
+  "P3": "available",
+  "P4": "available",
+  "P5": "available",
+  "Q1": "available",
+  "Q2": "available",
+  "Q3": "available",
+  "Q4": "available",
+  "Q5": "available",
+  "R1": "available",
+  "R2": {
+    "status": "occupied",
+    "occupied_until": 1744543924.1637514,
+    "vehicle_number": "MH 02 TY 8977",
+    "booking_time": "2025-04-13 15:02:04",
+    "duration_hours": 2.0
+  },
+  "R3": "available",
+  "R4": "available",
+  "R5": "available",
+  "S1": "available",
+  "S2": "available",
+  "S3": "available",
+  "S4": "available",
+  "S5": "available"
+}
