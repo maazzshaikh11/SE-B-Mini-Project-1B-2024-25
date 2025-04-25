@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Receipt - Commune{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Payment Receipt</h1>
+    <a href="{{ url_for('payments.view_payments', community_id=community.id) }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left me-1"></i> Back to Payments
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Receipt for {{ payment.month }} Maintenance</h5>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h6>Payment Information</h6>
+                <p>
+                    <strong>Receipt ID:</strong> #{{ payment.id }}<br>
+                    <strong>Month:</strong> {{ payment.month }}<br>
+                    <strong>Amount:</strong> ₹{{ payment.amount }}<br>
+                    <strong>Payment Date:</strong> {{ payment.payment_date.strftime('%b %d, %Y') }}<br>
+                    <strong>Status:</strong> <span class="badge bg-success">Paid</span>
+                </p>
+            </div>
+            <div class="col-md-6">
+                <h6>Resident Information</h6>
+                <p>
+                    <strong>Name:</strong> {{ payment.first_name }} {{ payment.last_name }}<br>
+                    <strong>Community:</strong> {{ community.name }}<br>
+                    <strong>Address:</strong> {{ community.address }}
+                </p>
+            </div>
+        </div>
+
+        <div class="text-center mb-4">
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                <h5>Payment Successful</h5>
+                <p class="mb-0">Thank you for your payment. This receipt serves as proof of payment for your maintenance dues.</p>
+            </div>
+        </div>
+
+        <div class="d-grid gap-2">
+            <button class="btn btn-primary" onclick="window.print()">
+                <i class="fas fa-print me-1"></i> Print Receipt
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
