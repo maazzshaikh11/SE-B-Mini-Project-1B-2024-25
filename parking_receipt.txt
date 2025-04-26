@@ -1,0 +1,11 @@
+PARKING RECEIPT
+===============
+
+Space: C4
+Entry Time: 03:57 PM
+Departure Time: 04:57 PM
+Duration: 1.0 hours
+Cost: $5.00
+Card: ************1111
+Transaction ID: TXN1742725666
+Date: 2025-03-23
